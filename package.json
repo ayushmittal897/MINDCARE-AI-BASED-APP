@@ -1,0 +1,24 @@
+{
+  "name": "mindcare",
+  "private": true,
+  "packageManager": "pnpm@9.14.2",
+  "scripts": {
+    "predev": "node scripts/check-ports.mjs",
+    "dev": "concurrently --names \"FRONTEND,BACKEND,ML\" --prefix-colors \"blue,green,magenta\" \"npm run dev:frontend\" \"npm run dev:backend\" \"npm run dev:ml\"",
+    "dev:frontend": "pnpm --filter @mindcare/web dev",
+    "dev:backend": "pnpm --filter @mindcare/api-gateway dev",
+    "dev:ml": "cd services/ml-core && python -m uvicorn main:app --reload --port 8011",
+    "stop": "node scripts/stop-services.mjs",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "test": "turbo test",
+    "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\""
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.5",
+    "dotenv": "^16.4.7",
+    "prettier": "^3.4.2",
+    "turbo": "^2.3.3",
+    "typescript": "^5.7.2"
+  }
+}

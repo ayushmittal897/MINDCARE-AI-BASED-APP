@@ -1,0 +1,98 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id           String    @id @default(cuid())
+  patientId    String    @unique
+  email        String    @unique
+  passwordHash String?
+  name         String?
+  role         String    @default("patient")
+  isApproved   Boolean   @default(true)
+  isEmailVerified Boolean @default(false)
+  otp          String?
+  otpExpiresAt DateTime?
+  createdAt    DateTime  @default(now())
+  adminGrantedAt DateTime?
+  sessions     Session[]
+  doctorRequests DoctorRequest[]
+}
+
+model Session {
+  id           String       @id @default(cuid())
+  displayId    String       @unique
+  userId       String
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  startedAt    DateTime     @default(now())
+  endedAt      DateTime?
+  embeddingRef String?
+  predictions  Prediction[]
+  reports      Report[]
+}
+
+model Prediction {
+  id          String   @id @default(cuid())
+  sessionId   String
+  session     Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  label       String
+  probability Float
+  createdAt   DateTime @default(now())
+}
+
+model Report {
+  id             String   @id @default(cuid())
+  sessionId      String
+  session        Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  userSummary    String?
+  medicalSummary String?
+  shapJson       Json?
+  weightsJson    Json?
+  confidencesJson Json?
+  screeningJson  Json?
+  predictionsJson Json?
+  inputsJson     Json?
+  prediction     String?
+  createdAt      DateTime @default(now())
+}
+
+model ConsentLog {
+  id        String   @id @default(cuid())
+  userId    String
+  version   String
+  accepted  Boolean
+  createdAt DateTime @default(now())
+}
+
+model FederatedUpdate {
+  id         String   @id @default(cuid())
+  roundId    Int
+  payloadRef String
+  createdAt  DateTime @default(now())
+}
+
+model FeatureFlag {
+  id         String   @id @default(uuid())
+  flagKey    String   @unique
+  enabled    Boolean  @default(false)
+  updatedAt  DateTime @default(now()) @updatedAt
+}
+
+model DoctorRequest {
+  id              String    @id @default(uuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
+  fullName        String
+  email           String
+  credentialsInfo String
+  status          String    @default("pending") // 'pending', 'approved', 'rejected'
+  requestedAt     DateTime  @default(now())
+  reviewedAt      DateTime?
+  reviewerNote    String?
+}
