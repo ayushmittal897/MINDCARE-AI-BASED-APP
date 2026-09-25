@@ -14,8 +14,8 @@ const requireAdmin = async (req: any, _res: any, next: any) => {
   }
 
   try {
-    const adminEmails = (process.env.ADMIN_EMAILS || "").split(",").map(e => e.trim().toLowerCase());
-    if (adminEmails.includes(req.user.email.toLowerCase())) {
+    const superAdmin = process.env.SUPER_ADMIN_EMAIL?.trim().toLowerCase();
+    if (superAdmin && req.user.email.toLowerCase() === superAdmin) {
       return next();
     }
 

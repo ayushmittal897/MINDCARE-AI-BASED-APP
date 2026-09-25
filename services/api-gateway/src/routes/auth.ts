@@ -77,8 +77,8 @@ authRouter.post("/register", rateLimit(), validateBody(registerSchema), async (r
     let userRole = role || "patient";
     let isApproved = true;
     
-    const adminEmails = (process.env.ADMIN_EMAILS || "").split(",").map(e => e.trim().toLowerCase());
-    if (adminEmails.includes(email.toLowerCase())) {
+    const superAdmin = process.env.SUPER_ADMIN_EMAIL?.trim().toLowerCase();
+    if (superAdmin && email.toLowerCase() === superAdmin) {
       userRole = "admin";
     } else if (userRole === "clinician" || userRole === "admin") {
        userRole = "patient"; // Security fallback: don't allow direct signup as clinician/admin
@@ -314,8 +314,8 @@ authRouter.post("/google", rateLimit(), validateBody(googleLoginSchema), async (
     if (!user) {
       const patientId = generatePatientId(name, email);
       
-      const adminEmails = (process.env.ADMIN_EMAILS || "").split(",").map(e => e.trim().toLowerCase());
-      const isAdmin = adminEmails.includes(email.toLowerCase());
+      const superAdmin = process.env.SUPER_ADMIN_EMAIL?.trim().toLowerCase();
+      const isAdmin = superAdmin ? email.toLowerCase() === superAdmin : false;
       
       user = await prisma.user.create({
         data: {

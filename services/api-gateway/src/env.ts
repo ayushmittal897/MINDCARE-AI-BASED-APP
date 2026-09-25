@@ -1,7 +1,7 @@
 import { config, parse } from "dotenv";
 import fs from "node:fs";
 import path from "node:path";
-import { logger } from "./logger.js"; // Or console.log if logger isn't available
+import { logger } from "./utils/logger.js"; // Or console.log if logger isn't available
 
 const rootEnv = path.resolve(process.cwd(), "../../.env");
 const serviceEnv = path.resolve(process.cwd(), ".env");
