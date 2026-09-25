@@ -14,7 +14,7 @@ import { useAuthStore } from "@/store/authStore";
 export function DashboardPage() {
   const result = useAnalysisStore((s) => s.current);
   const setResult = useAnalysisStore((s) => s.setResult);
-  const { data: history, isLoading, isError, error, refetch, isRefetching } = useHistory();
+  const { data: history, isLoading, isError, refetch, isRefetching } = useHistory();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const tab = searchParams.get("tab"); // 'session', 'clinical', or null

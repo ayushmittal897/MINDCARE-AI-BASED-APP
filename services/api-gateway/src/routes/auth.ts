@@ -10,6 +10,7 @@ import { logger } from "../utils/logger.js";
 import { requireAuth } from "../middleware/auth.js";
 import { sendOTPEmail } from "../utils/mailer.js";
 import { OAuth2Client } from "google-auth-library";
+import type { Prisma } from "@prisma/client";
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -378,7 +379,7 @@ authRouter.post("/request-clinician-access", requireAuth, rateLimit(), async (re
       return res.json({ message: "You already have a pending clinician request." });
     }
 
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       await tx.user.update({
         where: { id: user.id },
         data: { role: "pending_clinician" }

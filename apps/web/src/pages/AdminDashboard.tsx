@@ -83,13 +83,7 @@ export function AdminDashboard() {
     }
   };
 
-  const formatFlagName = (key: string) => {
-    return key
-      .split('_')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ')
-      .replace(' Enabled', '');
-  };
+
 
   const handleApprove = async (id: string) => {
     try {

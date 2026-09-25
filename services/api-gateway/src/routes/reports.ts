@@ -17,7 +17,7 @@ reportsRouter.get("/", requireAuth, async (req, res, next) => {
     });
     console.log("[reportsRouter] Found sessions count:", sessions.length);
 
-    const history = sessions.map((s) => ({
+    const history = sessions.map((s: any) => ({
       id: s.id,
       displayId: s.displayId,
       userId: s.userId,
@@ -55,7 +55,7 @@ reportsRouter.get("/:sessionId", requireAuth, async (req, res, next) => {
       sessionId: session.id,
       displayId: session.displayId,
       prediction: r.prediction || topPrediction,
-      probabilities: r.predictionsJson || session.predictions.map(p => ({ label: p.label, probability: p.probability })),
+      probabilities: r.predictionsJson || session.predictions.map((p: any) => ({ label: p.label, probability: p.probability })),
       confidences: r.confidencesJson ?? { cA: 0, cV: 0, cL: 0 },
       weights: r.weightsJson ?? { wA: 0, wV: 0, wL: 0 },
       shapRankings: r.shapJson ?? [],

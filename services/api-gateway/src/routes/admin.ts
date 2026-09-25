@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { z } from "zod";
+import type { Prisma } from "@prisma/client";
 import { prisma } from "../db.js";
 import { validateBody } from "../middleware/validate.js";
 import { requireAuth } from "../middleware/auth.js";
@@ -114,7 +115,7 @@ adminRouter.post("/doctor-requests/:id/process", validateBody(processRequestSche
       return next(new HttpError(400, "Request is already processed"));
     }
 
-    const updatedRequest = await prisma.$transaction(async (tx) => {
+    const updatedRequest = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const updated = await tx.doctorRequest.update({
         where: { id },
         data: {
